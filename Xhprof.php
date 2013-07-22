@@ -13,12 +13,12 @@ class Xhprof
     protected $source = null;
 
     /**
-     * @var null|bool If true, no need to call stop()
+     * @var bool If true, no need to call stop()
      */
     protected $useShutDown = null;
 
     /**
-     * @var string The dir where to put log of old report
+     * @var null|string The dir where to put log of old report
      *             if null, only xhprof report will be generated
      */
     protected $logDir = null;
@@ -31,7 +31,7 @@ class Xhprof
     /**
      * @param bool $useShutDown
      * @param string $source
-     * @param string $logDir if null, only xhprof report will be generated
+     * @param null|string $logDir if null, only xhprof report will be generated
      * @param string $baseUrl
      */
     public function __construct($useShutDown = true, $source = 'default', $logDir = '.', $baseUrl = 'http://xhprof.local')
@@ -69,5 +69,69 @@ class Xhprof
             $str = sprintf("%f %s - %s \n", $timeElapsed, $_SERVER['REQUEST_URI'], $profiler_url);
             file_put_contents($this->logDir . '/xhprof.log', $str, FILE_APPEND);
         }
+    }
+
+    /**
+     * @param string $baseUrl
+     */
+    public function setBaseUrl($baseUrl)
+    {
+        $this->baseUrl = $baseUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
+    }
+
+    /**
+     * @param null|string $logDir
+     */
+    public function setLogDir($logDir)
+    {
+        $this->logDir = $logDir;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLogDir()
+    {
+        return $this->logDir;
+    }
+
+    /**
+     * @param string $source
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param bool $useShutDown
+     */
+    public function setUseShutDown($useShutDown)
+    {
+        $this->useShutDown = $useShutDown;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getUseShutDown()
+    {
+        return $this->useShutDown;
     }
 }
