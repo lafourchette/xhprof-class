@@ -29,12 +29,12 @@ class Xhprof
     protected $baseUrl = null;
 
     /**
-     * @param bool $useShutDown
      * @param string $source
+     * @param bool $useShutDown
      * @param null|string $logDir if null, only xhprof report will be generated
      * @param string $baseUrl
      */
-    public function __construct($useShutDown = true, $source = 'default', $logDir = '.', $baseUrl = 'http://xhprof.local')
+    public function __construct($source = 'default', $useShutDown = true, $logDir = null, $baseUrl = 'http://xhprof.local')
     {
         $this->useShutDown = $useShutDown;
         $this->source = $source;
