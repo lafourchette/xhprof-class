@@ -49,7 +49,9 @@ class Xhprof
         require_once '/usr/share/php/xhprof_lib/utils/xhprof_runs.php';
         xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 
-        register_shutdown_function(array($this, 'stop'));
+        if ($this->useShutDown) {
+            register_shutdown_function(array($this, 'stop'));
+        }
     }
 
     public function stop()
