@@ -66,7 +66,8 @@ class Xhprof
             // url to the XHProf UI libraries (change the host name and path)
             $profiler_url = sprintf('%s?run=%s&source=%s', $this->baseUrl, $run_id, $this->source);
 
-            file_put_contents($this->logDir . '/xhprof.log', $timeElapsed . " " . $_SERVER['REQUEST_URI'] . ' - <a href="'. $profiler_url .'" target="_blank">Profiler output</a>' . "\n", FILE_APPEND);
+            $str = sprintf("%f %s - %s \n", $timeElapsed, $_SERVER['REQUEST_URI'], $profiler_url);
+            file_put_contents($this->logDir . '/xhprof.log', $str, FILE_APPEND);
         }
     }
 }
