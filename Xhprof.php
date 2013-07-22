@@ -13,12 +13,13 @@ class Xhprof
     protected $source = null;
 
     /**
-     * @var bool If true, no need to call stop()
+     * @var null|bool If true, no need to call stop()
      */
     protected $useShutDown = null;
 
     /**
      * @var string The dir where to put log of old report
+     *             if null, only xhprof report will be generated
      */
     protected $logDir = null;
 
@@ -30,7 +31,7 @@ class Xhprof
     /**
      * @param bool $useShutDown
      * @param string $source
-     * @param string $logDir
+     * @param string $logDir if null, only xhprof report will be generated
      * @param string $baseUrl
      */
     public function __construct($useShutDown = true, $source = 'default', $logDir = '.', $baseUrl = 'http://xhprof.local')
@@ -43,8 +44,6 @@ class Xhprof
 
     public function start()
     {
-        $this->time = microtime(true);
-
         require_once '/usr/share/php/xhprof_lib/utils/xhprof_lib.php';
         require_once '/usr/share/php/xhprof_lib/utils/xhprof_runs.php';
         xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
@@ -52,17 +51,22 @@ class Xhprof
         if ($this->useShutDown) {
             register_shutdown_function(array($this, 'stop'));
         }
+        $this->time = microtime(true);
     }
 
     public function stop()
     {
+        $timeElapsed = microtime(true) - $this->time;
+
         $xhprof_data = xhprof_disable();
         $xhprof_runs = new XHProfRuns_Default();
         $run_id = $xhprof_runs->save_run($xhprof_data, $this->source);
 
-        // url to the XHProf UI libraries (change the host name and path)
-        $profiler_url = sprintf('%s?run=%s&source=%s', $this->baseUrl, $run_id, $this->source);
+        if (null !== $this->logDir) {
+            // url to the XHProf UI libraries (change the host name and path)
+            $profiler_url = sprintf('%s?run=%s&source=%s', $this->baseUrl, $run_id, $this->source);
 
-        file_put_contents($this->logDir . '/xhprof.log', (microtime(true) - $this->time) . " " . $_SERVER['REQUEST_URI'] . ' - <a href="'. $profiler_url .'" target="_blank">Profiler output</a>' . "\n", FILE_APPEND);
+            file_put_contents($this->logDir . '/xhprof.log', $timeElapsed . " " . $_SERVER['REQUEST_URI'] . ' - <a href="'. $profiler_url .'" target="_blank">Profiler output</a>' . "\n", FILE_APPEND);
+        }
     }
 }
